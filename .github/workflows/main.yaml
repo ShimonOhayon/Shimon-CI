@@ -13,9 +13,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          ref: 'main'
-          token: ${{ secrets.PAT }}
+
       - name: yq - portable yaml processor
         uses: mikefarah/yq@v4.26.1
 
