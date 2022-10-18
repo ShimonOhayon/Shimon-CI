@@ -1,0 +1,31 @@
+name: Test
+on:
+  push:
+permissions:
+  id-token: write
+  contents: write
+  deployments: write
+  actions: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: 'master'
+          token: ${{ secrets.PAT }}
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4.26.1
+
+      - name: Update helm charts imageTag
+        run: |
+          yq -i '.imageTag = "test"' helm.yaml
+
+      - name: Commit helm values updates
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: |-
+            environment tag updated to: imageTag
+            See changes: https://github.com/NozomiNetworks/n2eos/pull/3584/commits/4dbac79a0a4b224114ce51732e48a2dc65765747
